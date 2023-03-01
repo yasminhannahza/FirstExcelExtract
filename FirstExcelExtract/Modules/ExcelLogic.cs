@@ -44,9 +44,30 @@ namespace FirstExcelExtract
             await UpdateProgressBar(3, columnQty, true);
             columnCFlat = columnC.FlattenArray<object>();
 
+
             await UpdateProgressBar(0, 1);
 
 
+            int firstNullLoc = columnAFlat
+                .FindIndex(x => x == null);
+
+            listClientInfo = new List<ClientInfo>();
+
+            for (int i = 1; i < firstNullLoc; i++)
+            {
+                await UpdateProgressBar(i, firstNullLoc - 1, true);
+
+                ClientInfo theClient = new ClientInfo()
+                {
+                    Name = columnAFlat[i].ToString(),
+                    Gender = columnBFlat[i].ToString(),
+                    Age = (double)columnCFlat[i]
+                };
+
+                listClientInfo.Add(theClient);
+            }
+
+            await UpdateProgressBar(0, 1);
             //object[,] columnA = worksheet.Columns[1].Value;
             //await UpdateProgressBar(1, columnQty, true);
 
@@ -70,8 +91,6 @@ namespace FirstExcelExtract
             //{
             //    columnCFlat.Add(item);
             //}
-
-
 
             workbook.Close(SaveChanges: false);
             xlApp.Quit();
